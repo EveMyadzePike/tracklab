@@ -21,7 +21,7 @@ def collate_fn(batch):
     shapes = [b["shape"] for _, b in batch]
     return idxs, (images, shapes)
 
-
+#defines YOLOv8
 class YOLOv8(ImageLevelModule):
     collate_fn = collate_fn
     input_columns = []

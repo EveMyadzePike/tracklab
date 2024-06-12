@@ -75,6 +75,8 @@ def main(cfg): #hydra loads the cfg file info and puts the data into the cfg obj
         # Evaluation
         evaluate(cfg, evaluator, tracker_state)
 
+
+        #state is actually no save
         # Save tracker state
         if tracker_state.save_file is not None:
             log.info(f"Saved state at : {tracker_state.save_file.resolve()}")
@@ -119,6 +121,7 @@ def close_enviroment():
 
 
 def evaluate(cfg, evaluator, tracker_state):
+    #eval_trackiong is True
     if cfg.get("eval_tracking", True) and cfg.dataset.nframes == -1:
         log.info("Starting evaluation.")
         evaluator.run(tracker_state)

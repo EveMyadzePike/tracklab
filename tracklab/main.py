@@ -81,7 +81,7 @@ def set_sharing_strategy():
 
 def init_environment(cfg):
     # For Hydra and Slurm compatibility
-    progress.use_rich = cfg.use_rich
+    progress.use_rich = cfg.use_rich #True in cfg file
     set_sharing_strategy()  # Do not touch
     device = "cuda" if torch.cuda.is_available() else "cpu"
     log.info(f"Using device: '{device}'.")

@@ -35,13 +35,17 @@ from torchreid.scripts.default_config import engine_run_kwargs
 from ...pipeline.detectionlevel_module import DetectionLevelModule
 from ...utils.download import download_file
 
-
+#This defines the bpbreid class
 class BPBReId(DetectionLevelModule):
     """
     """
 
     collate_fn = default_collate
+
+    #takes as input a bbox 
     input_columns = ["bbox_ltwh"]
+
+    #ouputs the embeddings, visibility, scores and body_masks
     output_columns = ["embeddings", "visibility_scores", "body_masks"]
 
     def __init__(
@@ -78,6 +82,8 @@ class BPBReId(DetectionLevelModule):
             tracking_dataset.nickname,
         )
         self.cfg = CN(OmegaConf.to_container(cfg, resolve=True))
+
+        #when this class is instantiated, it downloads these models
         self.download_models(load_weights=self.cfg.model.load_weights,
                              pretrained_path=self.cfg.model.bpbreid.hrnet_pretrained_path,
                              backbone=self.cfg.model.bpbreid.backbone)
@@ -86,7 +92,11 @@ class BPBReId(DetectionLevelModule):
         self.cfg.data.save_dir = save_path
         self.cfg.project.job_id = job_id
         self.cfg.use_gpu = torch.cuda.is_available()
+
+        #it builds the config file
         self.cfg = build_config(config=self.cfg)
+
+        #it sets the values for test_embeddings
         self.test_embeddings = self.cfg.model.bpbreid.test_embeddings
         # Register the PoseTrack21ReID dataset to Torchreid that will be instantiated when building Torchreid engine.
         self.training_enabled = training_enabled

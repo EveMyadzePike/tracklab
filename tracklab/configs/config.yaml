@@ -42,6 +42,11 @@ test_tracking: True
 print_config: False
 eval_tracking: True
 
+
+#so current working directory is the project direcoty and then add data to get data directory and models
+# so ran tracklab from within tracklab directory so that's the current working directory
+#and so data  is within tracklab/data
+
 # configure Hydra to use the current working directory
 # and set up the output directory according to experiment_name
 project_dir: "${hydra:runtime.cwd}"

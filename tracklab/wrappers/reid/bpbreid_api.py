@@ -69,6 +69,9 @@ class BPBReId(DetectionLevelModule):
         self.use_keypoints_visibility_scores_for_reid = (
             use_keypoints_visibility_scores_for_reid
         )
+
+        print("DO I use keypoints visibility scores for reid")
+        print(use_keypoints_visibility_scores_for_reid)
         tracking_dataset.name = self.dataset_cfg.name
         tracking_dataset.nickname = self.dataset_cfg.nickname
         additional_args = {
@@ -134,7 +137,7 @@ class BPBReId(DetectionLevelModule):
             "img": crop,
         }
 
-        #
+        #learnable_attention_enabled: True, so this does not execute
         if not self.cfg.model.bpbreid.learnable_attention_enabled:
             bbox_ltwh = detection.bbox.ltwh(
                 image_shape=(image.shape[1], image.shape[0]), rounded=True
@@ -162,6 +165,8 @@ class BPBReId(DetectionLevelModule):
             external_parts_masks = external_parts_masks.cpu().detach().numpy()
         else:
             external_parts_masks = None
+
+        #This will create the feauture extarctor
         if self.feature_extractor is None:
             self.feature_extractor = FeatureExtractor(
                 self.cfg,
@@ -171,13 +176,19 @@ class BPBReId(DetectionLevelModule):
                 model=self.model,
                 verbose=False,  # FIXME @Vladimir
             )
+
+        #This will give the reid_result
         reid_result = self.feature_extractor(
             im_crops, external_parts_masks=external_parts_masks
         )
+
+        #This will give the embeddings!!!
         embeddings, visibility_scores, body_masks, _ = extract_test_embeddings(
             reid_result, self.test_embeddings
         )
 
+
+        #convert embeddings to numpy -- no need to do pth file
         embeddings = embeddings.cpu().detach().numpy()
         visibility_scores = visibility_scores.cpu().detach().numpy()
         body_masks = body_masks.cpu().detach().numpy()

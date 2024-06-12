@@ -51,9 +51,11 @@ def main(cfg): #hydra loads the cfg file info and puts the data into the cfg obj
             module.train()
 
     # Test tracking
-    if cfg.test_tracking:
+    if cfg.test_tracking: #This is true
         log.info(f"Starting tracking operation on {cfg.dataset.eval_set} set.")
 
+
+        #see soccer_net_gs.yaml for eval_set
         # Init tracker state and tracking engine
         tracking_set = tracking_dataset.sets[cfg.dataset.eval_set]
         tracker_state = TrackerState(tracking_set, pipeline=pipeline, **cfg.state)

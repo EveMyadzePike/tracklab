@@ -38,7 +38,7 @@ def main(cfg): #hydra loads the cfg file info and puts the data into the cfg obj
             module = cfg.modules[name]
             inst_module = instantiate(module, device=device, tracking_dataset=tracking_dataset)
             modules.append(inst_module)
-    #instantiates each module, so now have list of modules
+    #instantiates each module, so now have list of modules: yolov8, bpbreid, oc_sort
 
     #The Pipeline is a list of modules
     pipeline = Pipeline(models=modules)

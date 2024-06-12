@@ -27,7 +27,7 @@ warnings.filterwarnings("ignore")
 def main(cfg): #hydra loads the cfg file info and puts the data into the cfg object
     device = init_environment(cfg)
 
-    # Instantiate all modules, using hydra.utils.instantiate
+    # Instantiate all modules, using hydra.utils.instantiate, passes config info to create instance of a class with that config
     tracking_dataset = instantiate(cfg.dataset)
     evaluator = instantiate(cfg.eval, tracking_dataset=tracking_dataset)
 

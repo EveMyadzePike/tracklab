@@ -1,7 +1,7 @@
 import os
 import rich.logging
 import torch
-import hydra
+import hydra #for config file management
 import warnings
 import logging
 
@@ -20,6 +20,9 @@ log = logging.getLogger(__name__)
 warnings.filterwarnings("ignore")
 
 
+
+#add this decorator so that hydra knows to run the configuration before loading main function
+#add config path and config name, so the decorator below points to the tracklab/configs/config.yaml
 @hydra.main(version_base=None, config_path="pkg://tracklab.configs", config_name="config")
 def main(cfg):
     device = init_environment(cfg)

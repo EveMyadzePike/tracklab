@@ -99,10 +99,14 @@ class BPBReId(DetectionLevelModule):
         #it sets the values for test_embeddings
         self.test_embeddings = self.cfg.model.bpbreid.test_embeddings
         # Register the PoseTrack21ReID dataset to Torchreid that will be instantiated when building Torchreid engine.
+
+        #This is false
         self.training_enabled = training_enabled
         self.feature_extractor = None
         self.model = None
 
+
+    #auto downloads weighst
     def download_models(self, load_weights, pretrained_path, backbone):
         if Path(load_weights).stem == "bpbreid_market1501_hrnet32_10642":
             md5 = "e79262f17e7486ece33eebe198c07841"
@@ -114,6 +118,8 @@ class BPBReId(DetectionLevelModule):
             download_file("https://zenodo.org/records/10604211/files/hrnetv2_w32_imagenet_pretrained.pth?download=1",
                           local_filename=path, md5=md5)
 
+
+    #This takes as input the image and the detection and the metadats
     @torch.no_grad()
     def preprocess(
         self, image, detection: pd.Series, metadata: pd.Series
@@ -127,6 +133,8 @@ class BPBReId(DetectionLevelModule):
         batch = {
             "img": crop,
         }
+
+        #
         if not self.cfg.model.bpbreid.learnable_attention_enabled:
             bbox_ltwh = detection.bbox.ltwh(
                 image_shape=(image.shape[1], image.shape[0]), rounded=True

@@ -42,6 +42,8 @@ def main(cfg): #hydra loads the cfg file info and puts the data into the cfg obj
 
     #The Pipeline is a list of modules
     pipeline = Pipeline(models=modules)
+    #instantiating the class causes the pipeline to list 
+    #log.info("Pipeline: " + " -> ".join(model.name for model in self.models))
 
 
     #For the modules, these are all false or not set -- see yolov8.yaml, bpbreid.yaml, oc_sort.yaml

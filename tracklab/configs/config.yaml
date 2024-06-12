@@ -13,7 +13,7 @@ defaults:
   - modules/pose_bottomup: openpifpaf #also in bpbreid
   - modules/reid: bpbreid #yes
   - modules/track: oc_sort #can change this
-  - _self_  #default list needs to have self in it
+  - _self_  #default list needs to have self in it, makes it so everything in default list is given preferential treatment
 
 # Pipeline definition :
 # - Defines the order in which the modules will be called

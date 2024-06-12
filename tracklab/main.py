@@ -24,7 +24,7 @@ warnings.filterwarnings("ignore")
 #add this decorator so that hydra knows to run the configuration before loading main function
 #add config path and config name, so the decorator below points to the tracklab/configs/config.yaml
 @hydra.main(version_base=None, config_path="pkg://tracklab.configs", config_name="config")
-def main(cfg):
+def main(cfg): #hydra loads the cfg file info and puts the data into the cfg object
     device = init_environment(cfg)
 
     # Instantiate all modules

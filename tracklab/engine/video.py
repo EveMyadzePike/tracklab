@@ -93,6 +93,8 @@ class VideoOnlineTrackingEngine:
                                   "video_id": video_filename}, name=frame_idx)
             self.callback("on_image_loop_start",
                           image_metadata=metadata, image_idx=frame_idx, index=frame_idx)
+
+            #3 model names, so detections is called 3 times
             for model_name in model_names:
                 model = self.models[model_name]
                 if len(detections) > 0:
@@ -101,6 +103,8 @@ class VideoOnlineTrackingEngine:
                     dets = pd.DataFrame()
                 if model.level == "video":
                     raise "Video-level not supported for online video tracking"
+
+                #This is the heart of it
                 elif model.level == "image":
                     batch = model.preprocess(image=image, detections=dets, metadata=metadata)
                     batch = type(model).collate_fn([(frame_idx, batch)])

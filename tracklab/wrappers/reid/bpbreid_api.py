@@ -72,6 +72,9 @@ class BPBReId(DetectionLevelModule):
 
         print("DO I use keypoints visibility scores for reid")
         print(use_keypoints_visibility_scores_for_reid)
+        #This is false
+
+        
         tracking_dataset.name = self.dataset_cfg.name
         tracking_dataset.nickname = self.dataset_cfg.nickname
         additional_args = {
@@ -190,9 +193,13 @@ class BPBReId(DetectionLevelModule):
 
         #convert embeddings to numpy -- no need to do pth file
         embeddings = embeddings.cpu().detach().numpy()
+
+        
         visibility_scores = visibility_scores.cpu().detach().numpy()
         body_masks = body_masks.cpu().detach().numpy()
 
+
+        #This does not execute
         if self.use_keypoints_visibility_scores_for_reid:
             kp_visibility_scores = batch["visibility_scores"].numpy()
             if visibility_scores.shape[1] > kp_visibility_scores.shape[1]:
@@ -211,7 +218,8 @@ class BPBReId(DetectionLevelModule):
             index=detections.index,
         )
         return reid_df
-
+        
+    #Not training -- so we never need to build torchreid modelengine or use engine.run
     def train(self):
         self.engine, self.model = build_torchreid_model_engine(self.cfg)
         self.engine.run(**engine_run_kwargs(self.cfg))

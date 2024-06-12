@@ -27,7 +27,7 @@ warnings.filterwarnings("ignore")
 def main(cfg): #hydra loads the cfg file info and puts the data into the cfg object
     device = init_environment(cfg)
 
-    # Instantiate all modules
+    # Instantiate all modules, using hydra.utils.instantiate
     tracking_dataset = instantiate(cfg.dataset)
     evaluator = instantiate(cfg.eval, tracking_dataset=tracking_dataset)
 
@@ -82,10 +82,12 @@ def set_sharing_strategy():
 def init_environment(cfg):
     # For Hydra and Slurm compatibility
     progress.use_rich = cfg.use_rich #True in cfg file
-    set_sharing_strategy()  # Do not touch
+    set_sharing_strategy()  # Do not touch, see definition above
     device = "cuda" if torch.cuda.is_available() else "cpu"
     log.info(f"Using device: '{device}'.")
-    wandb.init(cfg)
+    wandb.init(cfg) #weights and biases
+
+    #seems to be just logging info
     if cfg.print_config:
         log.info(OmegaConf.to_yaml(cfg))
     if cfg.use_rich:

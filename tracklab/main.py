@@ -64,6 +64,9 @@ def main(cfg): #hydra loads the cfg file info and puts the data into the cfg obj
         #create a datastuct named TrackerState, see tracker_state.py
         tracker_state = TrackerState(tracking_set, pipeline=pipeline, **cfg.state)
 
+        #This gets called by Pipeline/module.py
+        #log.info(f"Pipeline has been validated")
+
         #create instance of class
         tracking_engine = instantiate(
             cfg.engine,

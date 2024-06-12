@@ -88,7 +88,7 @@ class TrackerState(AbstractContextManager):
                 | {"video_id", "file_path", "frame"})
             log.info(f"Loading {self.load_columns} from {self.load_file}")
 
-        pipeline.validate(self.load_columns)
+        pipeline.validate(self.load_columns) #outputs the line, "Pipeline validated"
 
         self.zf = None
         self.video_id = None

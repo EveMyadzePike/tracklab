@@ -32,12 +32,15 @@ def main(cfg): #hydra loads the cfg file info and puts the data into the cfg obj
     evaluator = instantiate(cfg.eval, tracking_dataset=tracking_dataset)
 
     modules = []
+    #pipeline is bbox detector, reid, tracker
     if cfg.pipeline is not None:
-        for name in cfg.pipeline:
+        for name in cfg.pipeline: #iterate through list
             module = cfg.modules[name]
             inst_module = instantiate(module, device=device, tracking_dataset=tracking_dataset)
             modules.append(inst_module)
+    #instantiates each module, so now have list of modules
 
+    #The Pipeline is a list of modules
     pipeline = Pipeline(models=modules)
 
     # Train tracking modules

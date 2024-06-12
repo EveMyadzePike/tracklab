@@ -43,6 +43,8 @@ def main(cfg): #hydra loads the cfg file info and puts the data into the cfg obj
     #The Pipeline is a list of modules
     pipeline = Pipeline(models=modules)
 
+
+    #For the modules, these are all false or not set -- see yolov8.yaml, bpbreid.yaml, oc_sort.yaml
     # Train tracking modules
     for module in modules:
         if module.training_enabled:

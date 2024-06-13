@@ -41,7 +41,8 @@ def merge_dataframes(main_df, appended_piece):
     main_df.update(appended_piece)
     return main_df
 
-
+#This is the class that manages the full pipeline
+#So I must instantiate this class in main
 class TrackingEngine(ABC):
     """Manages the full tracking pipeline.
 

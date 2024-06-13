@@ -55,6 +55,7 @@ class TrackingEngine(ABC):
     |
     -> detect_multi_step -> detect_single_step -> reid_step -> track_step
 
+    #I want to learn both, starting with an offline engine-- a video is a sequence of images
     Implementors of :class:`TrackingEngine` will need to *at least* implement
     :func:`video_loop`.
     for example, an online engine will simply call each step in turn for every image in

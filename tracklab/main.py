@@ -74,7 +74,7 @@ def main(cfg): #hydra loads the cfg file info and puts the data into the cfg obj
             tracker_state=tracker_state,
         )
 
-        #called by engine.py
+        #called by engine.py, can call track_dataset only because this is an instance of tracking_engine
         # Run tracking and visualization
         tracking_engine.track_dataset()
 

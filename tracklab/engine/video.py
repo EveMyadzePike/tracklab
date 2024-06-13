@@ -100,6 +100,7 @@ class VideoOnlineTrackingEngine:
 
             #3 model names, so detections is called 3 times
             for model_name in model_names:
+                #so 1st model = yolov8
                 model = self.models[model_name]
                 if len(detections) > 0:
                     dets = detections[detections.image_id == frame_idx]

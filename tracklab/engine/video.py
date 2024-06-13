@@ -66,9 +66,12 @@ class VideoOnlineTrackingEngine:
         self.callback("on_dataset_track_end")
 
     def video_loop(self):
+        #will have 3 models that I can reset if possible
         for name, model in self.models.items():
             if hasattr(model, "reset"):
                 model.reset()
+
+        #online means cv2
         video_filename = int(self.video_filename) if str(self.video_filename).isnumeric() else str(self.video_filename)
         video_cap = cv2.VideoCapture(video_filename)
         fps = video_cap.get(cv2.CAP_PROP_FPS)

@@ -8,6 +8,8 @@ if TYPE_CHECKING:
     from tracklab.engine import TrackingEngine
 
 
+
+#parent class does not define on image loop end
 class Callback:
     def on_dataset_track_start(self, engine: "TrackingEngine"):
         pass

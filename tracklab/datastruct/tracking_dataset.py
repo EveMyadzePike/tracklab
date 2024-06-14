@@ -18,14 +18,16 @@ class SetsDict(dict):
         return super().__getitem__(key)
 
 
+
+# This is the different splits of the data, ground truth detections and metadata
 @dataclass
 class TrackingSet:
-    video_metadatas: pd.DataFrame
-    image_metadatas: pd.DataFrame
-    detections_gt: pd.DataFrame
+    video_metadatas: pd.DataFrame #required
+    image_metadatas: pd.DataFrame #required
+    detections_gt: pd.DataFrame #required
     image_gt: pd.DataFrame = pd.DataFrame(columns=["video_id"])
 
-
+# This is the class that every new dataset must extend
 class TrackingDataset(ABC):
     def __init__(
         self,

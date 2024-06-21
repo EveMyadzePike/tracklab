@@ -85,6 +85,8 @@ class BPBReIDStrongSORT(ImageLevelModule):
             score = detections.bbox.conf()
         else:
             score = detections.keypoints_conf
+
+        #This actually uses the embeddings aka reid features -- so this is full pipeline
         input_tuple = {
             "id": detections.index.to_numpy(),
             "bbox_ltwh": np.stack(detections.bbox_ltwh),
@@ -102,6 +104,8 @@ class BPBReIDStrongSORT(ImageLevelModule):
     def process(self, batch, detections: pd.DataFrame, metadatas: pd.DataFrame):
         if len(detections) == 0:
             return []
+
+        # This uses the bpbreid_stong_sort model to update
         results = self.model.update(
             batch["id"][0],
             batch["bbox_ltwh"][0],

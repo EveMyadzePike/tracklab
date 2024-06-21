@@ -147,7 +147,7 @@ class TrackingEngine(ABC):
             detections: a dataframe of all detections
         """
         pass
-
+    # This just returns pandas dataframes -- can print but what about visual
     def default_step(self, batch: Any, task: str, detections: pd.DataFrame,
                      image_pred: pd.DataFrame, **kwargs):
         model = self.models[task]

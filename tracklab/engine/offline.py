@@ -9,10 +9,11 @@ log = logging.getLogger(__name__)
 class OfflineTrackingEngine(TrackingEngine):
     #This is basically the TrackingEngine class with 1 extra function
     def video_loop(self, tracker_state, video, video_id):
+        #goes through all the models in the pipeline
         for name, model in self.models.items():
             if hasattr(model, "reset"):
                 model.reset()
-
+        
         detections, image_pred = tracker_state.load()
         if len(self.module_names) == 0:
             return detections, image_pred

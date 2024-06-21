@@ -31,9 +31,9 @@ class TrackerState(AbstractContextManager):
             bbox_format=None,
             pipeline=None,
     ):
-        self.pipeline = pipeline or {}
-        self.video_metadatas = tracking_set.video_metadatas
-        self.image_metadatas = tracking_set.image_metadatas
+        self.pipeline = pipeline or {} #this will be yolo, bpbreid, deepsort
+        self.video_metadatas = tracking_set.video_metadatas #probably None
+        self.image_metadatas = tracking_set.image_metadatas #probably None
         self.image_gt = tracking_set.image_gt
         self.image_pred = None
         self.detections_gt = tracking_set.detections_gt
@@ -101,7 +101,7 @@ class TrackerState(AbstractContextManager):
         self.load_from_groundtruth = load_from_groundtruth
         if self.load_from_groundtruth:
             self.load_groundtruth(self.load_columns)
-
+    
     def load_groundtruth(self, load_columns):
         from tracklab.engine.engine import merge_dataframes
         if self.pipeline.is_empty():
@@ -287,6 +287,7 @@ class TrackerState(AbstractContextManager):
         else:
             log.info(f"{self.video_id} already exists in {self.save_file} file")
 
+    #This gets called in main: Tracker_state.load()
     def load(self):
         """
         Returns:

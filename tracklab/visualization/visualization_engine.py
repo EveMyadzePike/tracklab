@@ -35,6 +35,7 @@ class VisualizationEngine(Callback):
                  **kwargs
                  ):
         self.visualizers = visualizers
+        print("self.visualizers")
         self.save_dir = Path("visualization")
         self.save_images = save_images
         self.save_videos = save_videos

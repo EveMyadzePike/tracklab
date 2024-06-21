@@ -302,10 +302,10 @@ class TrackerState(AbstractContextManager):
                 ]
         video_detections = pd.DataFrame()
         video_image_preds = self.image_metadatas[self.image_metadatas.video_id == self.video_id]
-        if self.load_from_groundtruth:
+        if self.load_from_groundtruth: #could be None
             video_detections = self.detections_pred_gt[self.detections_pred_gt.video_id == self.video_id]
             video_image_preds = self.image_pred_gt[self.image_pred_gt.video_id == self.video_id]
-        if self.load_file is not None:
+        if self.load_file is not None: #could be None
             if f"{self.video_id}.pkl" in self.zf["load"].namelist():
                 with self.zf["load"].open(f"{self.video_id}.pkl", "r") as fp:
                     video_detections = pickle.load(fp)[self.load_columns["detection"]]
@@ -322,7 +322,7 @@ class TrackerState(AbstractContextManager):
                     self.image_metadatas.video_id == self.video_id
                     ]
         self.update(video_detections, video_image_preds)
-        return video_detections, video_image_preds
+        return video_detections, video_image_preds #These are pandas dataframes, not booleans I don't think
 
     def __exit__(self, exc_type, exc_value, traceback):
         """

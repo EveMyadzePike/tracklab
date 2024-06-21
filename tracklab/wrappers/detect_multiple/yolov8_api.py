@@ -33,6 +33,8 @@ class YOLOv8(ImageLevelModule):
         "bbox_conf",
     ]
 
+
+    #initialize the yolo model and device
     def __init__(self, cfg, device, batch_size, **kwargs):
         super().__init__(batch_size)
         self.cfg = cfg

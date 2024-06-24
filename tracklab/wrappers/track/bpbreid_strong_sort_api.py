@@ -13,12 +13,14 @@ log = logging.getLogger(__name__)
 
 class BPBReIDStrongSORT(ImageLevelModule):
     input_columns = [
-        "bbox_ltwh",
-        "embeddings",
-        "visibility_scores",
+        "bbox_ltwh", #comes from yolo
+        "embeddings", #comes from bpbreid
+        "visibility_scores", #comes from bpbreid [so visibility scores do matter]
     ]
+
+    #generates these so if do online, add way of using these vales
     output_columns = [
-        "track_id",
+        "track_id", 
         "track_bbox_kf_ltwh",
         "track_bbox_pred_kf_ltwh",
         "matched_with",
@@ -33,7 +35,7 @@ class BPBReIDStrongSORT(ImageLevelModule):
         super().__init__(batch_size=1)
         self.cfg = cfg
         self.device = device
-        self.reset()
+        self.reset() #sets all these hyperparameters
 
     def reset(self):
         """Reset the tracker state to start tracking in a new video."""
@@ -58,7 +60,7 @@ class BPBReIDStrongSORT(ImageLevelModule):
         )
         # For camera compensation
         self.prev_frame = None
-
+    #uses the kalman filter
     def prepare_next_frame(self, next_frame: np.ndarray):
         # Propagate the state distribution to the current time step using a Kalman filter prediction step.
         self.model.tracker.predict()
@@ -71,7 +73,7 @@ class BPBReIDStrongSORT(ImageLevelModule):
 
     @torch.no_grad()
     def preprocess(self, image, detections: pd.DataFrame, metadata: pd.Series):
-        if len(detections) == 0:
+        if len(detections) == 0: #no detections, all empty lists
             return {
             "id": [],
             "bbox_ltwh": [],
@@ -88,7 +90,7 @@ class BPBReIDStrongSORT(ImageLevelModule):
 
         #This actually uses the embeddings aka reid features -- so this is full pipeline
         input_tuple = {
-            "id": detections.index.to_numpy(),
+            "id": detections.index.to_numpy(), #the index is the id
             "bbox_ltwh": np.stack(detections.bbox_ltwh),
             "reid_features": np.stack(detections.embeddings),
             "visibility_scores": np.stack(detections.visibility_scores),
@@ -105,6 +107,7 @@ class BPBReIDStrongSORT(ImageLevelModule):
         if len(detections) == 0:
             return []
 
+        #not a model, more like just a dictionary
         # This uses the bpbreid_stong_sort model to update
         results = self.model.update(
             batch["id"][0],

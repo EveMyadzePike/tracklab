@@ -47,6 +47,8 @@ ground_truth_cmap = [
     [185, 251, 192],
 ]
 
+
+# These are the 10 available colors 
 prediction_cmap = [
     [255, 0, 0],
     [255, 135, 0],
@@ -448,13 +450,14 @@ class VisualizationEngine(Callback):
                 color_bg=(255, 255, 255),
             )
 
+    # this method gets called to set the colors for bbox. text, keypoints, and skeleton
     def _colors(self, detection, is_prediction):
         cmap = prediction_cmap if is_prediction else ground_truth_cmap
         if pd.isna(detection.track_id):
             color_bbox = self.cfg.bbox.color_no_id
             color_text = self.cfg.text.color_no_id
-            color_keypoint = self.cfg.keypoint.color_no_id
-            color_skeleton = self.cfg.skeleton.color_no_id
+            color_keypoint = self.cfg.keypoint.color_no_id #not using
+            color_skeleton = self.cfg.skeleton.color_no_id #not using
         else:
             color_key = "color_prediction" if is_prediction else "color_ground_truth"
             color_id = cmap[int(detection.track_id) % len(cmap)]

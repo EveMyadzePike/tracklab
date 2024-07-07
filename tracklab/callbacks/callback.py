@@ -38,6 +38,7 @@ class Callback:
     ):
         pass
 
+    #this function gets metadata from call in video.py
     def on_image_loop_start(
         self,
         engine: "TrackingEngine",

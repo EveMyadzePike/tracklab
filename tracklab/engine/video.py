@@ -105,21 +105,36 @@ class VideoOnlineTrackingEngine:
             self.callback("on_image_loop_start",
                           image_metadata=metadata, image_idx=frame_idx, index=frame_idx)
 
-            #3 model names, so detections is called 3 times
+            #3 model names, so detections gets passed to the default step 3 times and the detections get 
+            #updated and returned to the model
+            
             for model_name in model_names:
                 #so 1st model = yolov8
                 model = self.models[model_name]
-                if len(detections) > 0:
+                if len(detections) > 0: #meaning your dataframe is not empty
+                    # dets is a filtered data frame, after applying mask, so that you only see the
+                    #the detctions that correspond to the current frame
                     dets = detections[detections.image_id == frame_idx]
                 else:
-                    dets = pd.DataFrame()
+                    dets = pd.DataFrame() #if dataframe is empty, no need to filter, it just stays empty
                 if model.level == "video":
-                    raise "Video-level not supported for online video tracking"
+                    raise "Video-level not supported for online video tracking" #online means pass one frame at a time
+                    #video level is offline
 
                 #This is the heart of it
                 elif model.level == "image":
+                    #pass the image (RGB), the filtered detetcions, and the metadata to the appropriate models preprocess function
+                    #The image, current detections (dets), and metadata for the current frame are passed to the preprocess method 
+                    #of the model. This method prepares the data for the model's processing.
                     batch = model.preprocess(image=image, detections=dets, metadata=metadata)
+
+                    #The preprocessed data is then collated into a batch format suitable for the model. 
+                    #The collate_fn method is used for this, which is a static method of the model's class. 
+                    #The batch is packed with its index (frame_idx).
                     batch = type(model).collate_fn([(frame_idx, batch)])
+
+                    #The default_step method is called with the collated batch, model name, existing detections, and metadata. 
+                    #This method handles the core processing logic for the model.
                     detections = self.default_step(batch, model_name, detections, metadata)
                 elif model.level == "detection":
                     for idx, detection in dets.iterrows():
@@ -133,20 +148,31 @@ class VideoOnlineTrackingEngine:
 
         return detections
 
+    #There are different tasks, so the model for the task gets called
     def default_step(self, batch: Any, task: str, detections: pd.DataFrame, metadata, **kwargs):
-        model = self.models[task]
+
+        #The model corresponding to the given task (model_name) is retrieved.
+        model = self.models[task] #this could be yolo or bpbreid
+
+        #A callback is called to mark the start of the processing step.
         self.callback(f"on_module_step_start", task=task, batch=batch)
         idxs, batch = batch
         idxs = idxs.cpu() if isinstance(idxs, torch.Tensor) else idxs
         if model.level == "image":
             log.info(f"step : {idxs} {self.img_metadatas.index}")
+            #Metadata for the current frame is packed into a DataFrame.
             batch_metadatas = pd.DataFrame([metadata])
+
+            #If there are existing detections, they are filtered to include only those for the current frame.
             if len(detections) > 0:
                 batch_input_detections = detections.loc[
                     np.isin(detections.image_id, batch_metadatas.index)
                 ]
             else:
                 batch_input_detections = detections
+
+            #The model's process method is called with the batch, filtered detections, and metadata. 
+            #This method performs the actual detection processing.
             batch_detections = self.models[task].process(
                 batch,
                 batch_input_detections,
@@ -159,7 +185,10 @@ class VideoOnlineTrackingEngine:
                 metadatas=None,
                 **kwargs,
             )
+        #The new detections from the current processing step are merged with the existing detections DataFrame.
         detections = merge_dataframes(detections, batch_detections)
+
+        #A callback is called to mark the end of the processing step.
         self.callback(
             f"on_module_step_end", task=task, batch=batch, detections=detections
         )

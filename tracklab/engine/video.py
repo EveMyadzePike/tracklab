@@ -73,9 +73,11 @@ class VideoOnlineTrackingEngine:
 
         #online means cv2
         video_filename = int(self.video_filename) if str(self.video_filename).isnumeric() else str(self.video_filename)
+
+        # create video capture object from webcam or video path
         video_cap = cv2.VideoCapture(video_filename)
-        fps = video_cap.get(cv2.CAP_PROP_FPS)
-        frame_modulo = fps // self.target_fps
+        fps = video_cap.get(cv2.CAP_PROP_FPS) #get the frames per secomd
+        frame_modulo = fps // self.target_fps #not sure what target is?
         assert video_cap.isOpened(), f"Error opening video stream or file {video_filename}"
         if platform.system() == "Linux":
             cv2.namedWindow(str(self.video_filename), cv2.WINDOW_NORMAL | cv2.WINDOW_KEEPRATIO)
@@ -84,17 +86,22 @@ class VideoOnlineTrackingEngine:
         model_names = self.module_names
         # print('in offline.py, model_names: ', model_names)
         frame_idx = -1
-        detections = pd.DataFrame()
+        detections = pd.DataFrame() #start with empty dataframe
         while video_cap.isOpened():
-            frame_idx += 1
-            ret, frame = video_cap.read()
+            frame_idx += 1 #this is a number
+            ret, frame = video_cap.read() #read in 1st frame
             if frame_idx % frame_modulo != 0:
                 continue
-            image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+            image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB) #convert the frame to RGB
             if not ret:
-                break
+                break #if nothing read, stop
+
+            #start collecting the metadata
+            #id and frame are the same and name are the same
             metadata = pd.Series({"id": frame_idx, "frame": frame_idx,
                                   "video_id": video_filename}, name=frame_idx)
+
+            #passes the data frame to the callback function named below
             self.callback("on_image_loop_start",
                           image_metadata=metadata, image_idx=frame_idx, index=frame_idx)
 
